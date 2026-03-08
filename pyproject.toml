@@ -4,8 +4,8 @@ requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "kmeans-from-scratch-laguchori"
-version = "0.1.0"
+name = "kmeans-from-scratch"
+version = "0.1.7"
 description = "A from-scratch implementation of K-Means clustering algorithm"
 readme = "README.md"
 requires-python = ">=3.8"
