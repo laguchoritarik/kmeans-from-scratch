@@ -6,7 +6,7 @@ class KMeans:
         self.n_clusters=n_clusters
         if(init=='random'):
             self.init_strategy_=RandomInit()
-        elif(init=='kmean++'):
+        elif(init=='k-means++'):
             self.init_strategy_=KMeanPlusPlusInit()
         else:
             raise ValueError(f"init method '{init}' not supported")
@@ -71,20 +71,68 @@ class KMeans:
         
         Parameters:
         -----------
-        X : array-like, shape (n_samples, n_features)
+        X : np.ndarray, shape (n_samples, n_features)
             New data to predict.
+        
+        Returns:
+        --------
+        labels : np.ndarray, shape (n_samples,)
+            Index of the cluster each sample belongs to.
         """
-        # Logic will be implemented in Step 5
-        pass
+        # Vérifier que le modèle est entraîné
+        if self.cluster_centers_ is None:
+            raise ValueError("Model not fitted. Call fit() before predict().")
+        
+        from kmeans_lib.distances import compute_distances
+        
+        # Calculer les distances aux centroïdes
+        distances = compute_distances(X, self.cluster_centers_)
+        
+        # Retourner l'index du centroïde le plus proche
+        return np.argmin(distances, axis=1)
+
+
     def transform(self, X):
         """
         Transform X to a cluster-distance space.
         
         Parameters:
         -----------
-        X : array-like, shape (n_samples, n_features)
+        X : np.ndarray, shape (n_samples, n_features)
             New data to transform.
+        
+        Returns:
+        --------
+        distances : np.ndarray, shape (n_samples, n_clusters)
+            Distance of each sample to each cluster center.
         """
-        # Logic will be implemented in Step 5
-        pass
+        # Vérifier que le modèle est entraîné
+        if self.cluster_centers_ is None:
+            raise ValueError("Model not fitted. Call fit() before transform().")
+        
+        from kmeans_lib.distances import compute_distances
+        
+        # Retourner la matrice des distances
+        return compute_distances(X, self.cluster_centers_)
+    def score(self, X):
+        """
+        Opposite of the value of X on the K-means objective.
+        
+        Parameters:
+        -----------
+        X : np.ndarray, shape (n_samples, n_features)
+            Test instances.
+        
+        Returns:
+        --------
+        score : float
+            Negative inertia (lower is better).
+        """
+        from kmeans_lib.distances import compute_distances
+        
+        labels = self.predict(X)
+        distances = compute_distances(X, self.cluster_centers_)
+        inertia = np.sum(distances[np.arange(len(X)), labels] ** 2)
+        
+        return -inertia  # Négatif car scikit-learn utilise un score à maximiser
 

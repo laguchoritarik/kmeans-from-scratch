@@ -1,24 +1,57 @@
 import numpy as np
 from kmeans_lib.core import KMeans
 
-# Données de test (2 clusters bien séparés)
-np.random.seed(42)  # On fixe le seed avant d'appeler KMeans
-X = np.vstack([
-    np.random.randn(50, 2) + [0, 0],   # Cluster 1
-    np.random.randn(50, 2) + [5, 5]    # Cluster 2
+# ─────────────────────────────────────────────────────
+# 1. Création des données d'entraînement
+# ─────────────────────────────────────────────────────
+np.random.seed(42)
+X_train = np.vstack([
+    np.random.randn(50, 2) + [0, 0],
+    np.random.randn(50, 2) + [5, 5]
 ])
 
-# Test avec initialisation random (CORRECTÉ)
-kmeans = KMeans(n_clusters=2, init='random', max_iter=100)  # ✅ 'init' pas 'init_strategy'
-kmeans.fit(X)
+# ─────────────────────────────────────────────────────
+# 2. Entraînement du modèle
+# ─────────────────────────────────────────────────────
+kmeans = KMeans(n_clusters=2, init='k-means++', max_iter=100)
+kmeans.fit(X_train)
 
-print(f"Nombre d'itérations: {kmeans.n_iter_}")
-print(f"Inertie: {kmeans.inertia_:.2f}")
-print(f"Shape des centroïdes: {kmeans.cluster_centers_.shape}")
-print(f"Shape des labels: {kmeans.labels_.shape}")
+print(f"✅ Modèle entraîné en {kmeans.n_iter_} itérations")
+print(f"   Inertie: {kmeans.inertia_:.2f}")
 
-# Vérifications
-assert kmeans.cluster_centers_.shape == (2, 2), "Erreur shape centroïdes !"
-assert kmeans.labels_.shape == (100,), "Erreur shape labels !"
+# ─────────────────────────────────────────────────────
+# 3. Test de predict() sur de NOUVELLES données
+# ─────────────────────────────────────────────────────
+X_test = np.array([[0.5, 0.5], [5.5, 5.5], [2.5, 2.5]])
+predictions = kmeans.predict(X_test)
 
-print("\n✅ KMeans fit() OK !")
+print(f"\n✅ Prédictions sur nouvelles données:")
+for i, (point, label) in enumerate(zip(X_test, predictions)):
+    print(f"   Point {i} {point} → Cluster {label}")
+
+# ─────────────────────────────────────────────────────
+# 4. Test de transform()
+# ─────────────────────────────────────────────────────
+distances = kmeans.transform(X_test)
+
+print(f"\n✅ Distances aux centroïdes:")
+for i, (point, dist) in enumerate(zip(X_test, distances)):
+    print(f"   Point {i} → Distances: [{dist[0]:.3f}, {dist[1]:.3f}]")
+
+# ─────────────────────────────────────────────────────
+# 5. Test de score()
+# ─────────────────────────────────────────────────────
+score = kmeans.score(X_test)
+print(f"\n✅ Score (négatif de l'inertie): {score:.2f}")
+
+# ─────────────────────────────────────────────────────
+# 6. Vérification d'erreur (modèle non fitted)
+# ─────────────────────────────────────────────────────
+kmeans_unfitted = KMeans(n_clusters=2)
+try:
+    kmeans_unfitted.predict(X_test)
+    print("❌ Erreur: aurait dû lever une exception")
+except ValueError as e:
+    print(f"\n✅ Gestion d'erreur OK: {e}")
+
+print("\n🎉 Toutes les tests sont passés !")

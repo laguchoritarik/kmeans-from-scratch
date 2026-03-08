@@ -1,0 +1,37 @@
+# pyproject.toml
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kmeans-from-scratch-laguchori"
+version = "0.1.0"
+description = "A from-scratch implementation of K-Means clustering algorithm"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "laguchori", email = "ton@email.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.20.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black",
+    "flake8"
+]
+
+[project.urls]
+Homepage = "https://github.com/laguchori/kmeans-from-scratch"
+Repository = "https://github.com/laguchori/kmeans-from-scratch.git"
