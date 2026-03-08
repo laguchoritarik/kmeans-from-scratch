@@ -1,19 +1,24 @@
 import numpy as np
-from kmeans_lib.initialization import KMeanPlusPlusInit
+from kmeans_lib.core import KMeans
 
-# Données de test
-np.random.seed(42)  # Pour la reproductibilité
-X = np.random.rand(100, 2)
+# Données de test (2 clusters bien séparés)
+np.random.seed(42)  # On fixe le seed avant d'appeler KMeans
+X = np.vstack([
+    np.random.randn(50, 2) + [0, 0],   # Cluster 1
+    np.random.randn(50, 2) + [5, 5]    # Cluster 2
+])
 
-# Test KMeans++
-kpp_init = KMeanPlusPlusInit()
-centers = kpp_init.initialize(X, 5)
+# Test avec initialisation random (CORRECTÉ)
+kmeans = KMeans(n_clusters=2, init='random', max_iter=100)  # ✅ 'init' pas 'init_strategy'
+kmeans.fit(X)
 
-print(f"Shape des centroïdes: {centers.shape}")  # Doit être (5, 2)
-assert centers.shape == (5, 2), "Erreur de shape !"
+print(f"Nombre d'itérations: {kmeans.n_iter_}")
+print(f"Inertie: {kmeans.inertia_:.2f}")
+print(f"Shape des centroïdes: {kmeans.cluster_centers_.shape}")
+print(f"Shape des labels: {kmeans.labels_.shape}")
 
-# Vérifier que les centroïdes sont bien des points de X
-for center in centers:
-    assert np.any(np.all(X == center, axis=1)), "Centroïde n'est pas dans X !"
+# Vérifications
+assert kmeans.cluster_centers_.shape == (2, 2), "Erreur shape centroïdes !"
+assert kmeans.labels_.shape == (100,), "Erreur shape labels !"
 
-print("K-Means++ Init OK !")
+print("\n✅ KMeans fit() OK !")
