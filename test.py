@@ -1,9 +1,10 @@
 import numpy as np
-from kmeans_lib.distances import compute_distances
+from kmeans_lib.initialization import RandomInit
 
-X = np.array([[0, 0], [1, 1], [2, 2]])
-centers = np.array([[0.5, 0.5], [1.5, 1.5]])
+X = np.random.rand(50, 4)
+init = RandomInit()
+centers = init.initialize(X, 3)
 
-distances = compute_distances(X, centers)
-print(distances)
-print(f"Shape: {distances.shape}")  # Doit être (3, 2)
+print(f"Centers shape: {centers.shape}")  # Attendu: (3, 4)
+assert centers.shape == (3, 4), "Erreur de shape !"
+print("RandomInit OK !")

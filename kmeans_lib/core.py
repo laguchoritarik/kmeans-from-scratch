@@ -1,7 +1,13 @@
+from initialization import RandomInit,KMeanPlusPlusInit
 class KMeans:
     def __init__(self,n_clusters=8,init='random',max_iter=300,tol=1e-4):
         self.n_clusters=n_clusters
-        self.init_=init
+        if(init=='random'):
+            self.init_strategy=RandomInit()
+        elif(init=='kmean++'):
+            self.init_strategy=KMeanPlusPlusInit()
+        else:
+            raise ValueError(f"init method '{init}' not supported")
         self.max_iter=max_iter
         self.tol=tol
         self.cluster_centers_ = None
@@ -18,7 +24,7 @@ class KMeans:
             Training instances to cluster.
         """
         # Logic will be implemented in Step 3 & 4
-        pass
+        self.cluster_centers_=self.init_strategy.initialize(X,self.n_clusters)
         return self
     def predict(self, X):
         """
