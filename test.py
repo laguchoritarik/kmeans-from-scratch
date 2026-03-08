@@ -1,10 +1,19 @@
 import numpy as np
-from kmeans_lib.initialization import RandomInit
+from kmeans_lib.initialization import KMeanPlusPlusInit
 
-X = np.random.rand(50, 4)
-init = RandomInit()
-centers = init.initialize(X, 3)
+# Données de test
+np.random.seed(42)  # Pour la reproductibilité
+X = np.random.rand(100, 2)
 
-print(f"Centers shape: {centers.shape}")  # Attendu: (3, 4)
-assert centers.shape == (3, 4), "Erreur de shape !"
-print("RandomInit OK !")
+# Test KMeans++
+kpp_init = KMeanPlusPlusInit()
+centers = kpp_init.initialize(X, 5)
+
+print(f"Shape des centroïdes: {centers.shape}")  # Doit être (5, 2)
+assert centers.shape == (5, 2), "Erreur de shape !"
+
+# Vérifier que les centroïdes sont bien des points de X
+for center in centers:
+    assert np.any(np.all(X == center, axis=1)), "Centroïde n'est pas dans X !"
+
+print("K-Means++ Init OK !")
