@@ -18,13 +18,4 @@ def compute_distances(X, centers):
         X[i] and centers[j].
     """
     # TODO: Implémente ici avec NumPy (sans boucle for)
-    n_samples,n_features=X.shape
-    n_centers,_=centers.shape
-    distances=np.zeros((len(X),len(centers)))
-    for i in range(n_samples):
-        for j in range(n_centers):
-            d=np.dot(X[i]-centers[j],(X[i]-centers[j]).T)
-            #d=np.sqrt(d)
-            distances[i,j]=d
-    distances=np.sqrt(distances)
-    return distances
+    return np.sqrt(np.sum((X[:,np.newaxis,:]-centers[np.newaxis:,:])**2,axis=2))
